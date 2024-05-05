@@ -6,4 +6,4 @@ export * from './PokemonList'
 export * from  "./Login"
 export * from "./Register"
 export * from "./UserMenu"
-export * from "./ModalAvatares"
+export * from './EditProfile'

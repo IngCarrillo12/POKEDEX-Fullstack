@@ -6,6 +6,7 @@ import { Register } from "./components/Register"
 import { HomePage, SearchPage, PokemonPage } from "./pages";
 import { FavoritosPage } from "./pages/FavoritosPage";
 import { authContext } from "./context/AuthContext";
+import { EditProfile } from "./components";
 
 export const AppRouter = ()=>{
     const { user } = useContext(authContext)
@@ -19,6 +20,10 @@ export const AppRouter = ()=>{
             <Route
           path="/favoritos"
           element={user ? <FavoritosPage /> : <Navigate to="/login" />}
+        />
+         <Route
+          path="/editprofile"
+          element={user ? <EditProfile /> : <Navigate to="/login" />}
         />
         </Route>
         <Route path="*" element={<Navigate to ='/'/>} />

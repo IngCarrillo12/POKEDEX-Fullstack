@@ -3,7 +3,6 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { PokemonContext } from '../context/PokemonContext'
 import { authContext } from '../context/AuthContext'
 import { UserMenu} from "./index"
-import { ModalAvatares } from "./index"
 import logoApp from "../resources/logoApp.webp"
 export const Navigation = () => {
   const {onInputChange, valueSearch, onResetForm} = useContext(PokemonContext)

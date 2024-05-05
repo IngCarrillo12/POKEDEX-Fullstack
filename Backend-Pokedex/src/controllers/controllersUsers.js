@@ -55,3 +55,24 @@ export const logout = (req,res)=>{
    })
    return res.sendStatus(200);
 }
+
+export const updateUser = async(req, res)=>{
+    try {
+        const {username, password, birthday, email, iduser} = req.body
+        // Si planeas actualizar la contraseña, asegúrate de hashearla primero
+        const passwordHash = await bcrypt.hash(password, 10);
+        console.log(username, password, birthday, email, iduser)
+        const [response] = await db.query('UPDATE users SET username=?, password=?, birthday=?, email=? WHERE idusers=?', 
+                                          [username, passwordHash, birthday, email, iduser]);
+
+        if(response.affectedRows === 0){
+            return res.status(404).send({message: "No se pudo actualizar el usuario"});
+        }
+        res.status(200).send({message: "Usuario actualizado con éxito"});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message: error.message});
+    }
+}
+

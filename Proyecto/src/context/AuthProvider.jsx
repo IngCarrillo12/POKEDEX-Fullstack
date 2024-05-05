@@ -61,10 +61,20 @@ const logout = async()=>{
   const {data} = await axios.post(`${urlApi}/users/logout`,{withCredentials:true})
   if(data)setUser(null)
 }
+const editProfile = async(values)=>{
+    try {
+      console.log(username, password, birthday, email)
+      const {username, password, birthday, email} = values
+      const {data}= await axios.put(`${urlApi}/users/profile`,{username, password, birthday, email, iduser: user.idusers}, {withCredentials:true}) 
+      console.log(data.message)   
+    } catch (error) {
+      console.log(error)
+    }
+}
 
 
   return (
-    <authContext.Provider value={{ signUp, login, user, getFavorites, toggleFavoritos, logout}}>
+    <authContext.Provider value={{ signUp, login, user, getFavorites, toggleFavoritos, logout, editProfile}}>
       {children}
     </authContext.Provider>
   );
