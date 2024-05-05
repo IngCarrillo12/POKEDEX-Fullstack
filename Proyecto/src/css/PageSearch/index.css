@@ -1,0 +1,14 @@
+.p-search{
+	margin-bottom: 30px;
+	font-size: 22px;
+}
+
+.p-search span{
+	font-weight: 700;
+}
+
+@media (max-width:768px){
+	.p-search{
+		margin-left: 15px;
+	}
+}

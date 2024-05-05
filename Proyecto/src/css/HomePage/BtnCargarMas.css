@@ -1,0 +1,21 @@
+.container-btn-load{
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.btn-load{
+	border: none;
+	padding: 15px 40px;
+	font-family: inherit;
+	background-color: var(--color-primary);
+	color: #fff;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.btn-load:hover{
+	background-color: var(--color-primary-hover);
+	color: #000;
+}

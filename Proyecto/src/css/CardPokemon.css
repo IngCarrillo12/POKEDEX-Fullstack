@@ -1,0 +1,133 @@
+.card-list-pokemon{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.icon-favorito{
+    position: absolute;
+    right: .2rem;
+    top: .2rem;
+    z-index: 2;
+}
+.card-pokemon{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    color: #424242;
+    text-decoration: none;
+    margin-bottom: .5rem;
+    transition: .4s ease-in-out;
+}
+.card-pokemon:hover{
+    box-shadow: 0px 0px 20px #4e4e4e;
+    width: 101%;
+}
+.pokemon-img{
+    background-color: #f2f2f2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 250px;
+    width: 100%;
+    padding: 1rem;
+}
+.card-pokemon:hover > .pokemon-img > img{
+    width: 110%;
+	height: 110%;
+}
+.pokemon-img img{
+    width: 100%;
+	height: 100%;
+    transition: .5s linear;
+}
+.pokemon-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .2rem;
+    padding-bottom: 1rem;
+}
+.pokemon-id{
+    font-size: .9rem;
+}
+.pokemon-name{
+    font-size: 1.5rem;
+}
+.text-capitalize{
+    text-transform: capitalize;
+}
+.pokemon-types{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: .9rem;
+    text-transform: capitalize;
+}
+.type{
+    padding: .3rem 1rem;
+    border-radius: .3rem;
+    text-align: center;
+}
+.grass{
+    background-color: var(--color-grass);
+}
+.poison{
+    background-color: var(--color-poison);
+}
+.fire{
+    background-color: var(--color-fire);
+}
+.water{
+    background-color: var(--color-water);
+}
+.flying{
+    background-color: var(--color-flying);
+}
+.bug{
+    background-color: var(--color-bug);
+}
+.ground{
+    background-color: var(--color-ground);
+}
+.electric{
+    background-color: var(--color-electric);
+}
+.fairy{
+    background-color: var(--color-fairy);
+}
+.normal{
+    background-color: var(--color-normal);
+}
+.fighting{
+    background-color: var(--color-fighting);
+}
+.dark{
+    background-color: var(--color-dark);
+}
+.dragon{
+    background-color:var(--color-dark);
+}
+.ice{
+    background-color: var(--color-ice);
+}
+.ghost{
+    background-color: var(--color-ghost);
+}
+.rock{
+    background-color: var(--color-rock);
+}
+.psychic{
+    background-color: var(--color-psychic);
+}
+.steel{
+    background-color: var(--color-steel);
+}
+
+@media(max-width:768px) {
+    .card-list-pokemon{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

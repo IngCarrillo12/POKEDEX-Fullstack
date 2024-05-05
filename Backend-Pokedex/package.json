@@ -1,0 +1,21 @@
+{
+  "name": "backend-pokedex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./src/index.js",
+    "start": "node ./src/index.js"
+  },
+  "author": "Ing Carrillo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql2": "^3.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
