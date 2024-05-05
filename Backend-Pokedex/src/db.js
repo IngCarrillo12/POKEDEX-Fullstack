@@ -6,5 +6,4 @@ export const db = createPool({
     database: DB_NAME,
     password: DB_PASSWORD,
     user:DB_USER,
-
 })

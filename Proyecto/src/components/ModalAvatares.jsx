@@ -1,7 +1,4 @@
 import React, { useContext, useState } from 'react';
-import {doc, setDoc } from 'firebase/firestore';
-import {updateProfile } from 'firebase/auth';
-import { db, auth } from "../fireBase"
 import { authContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 

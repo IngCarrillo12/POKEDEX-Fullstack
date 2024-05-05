@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@uiball/loaders": "^1.2.6",
+    "axios": "^1.6.8",
     "firebase": "^10.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.4",
     "react-router-dom": "^6.6.1",
     "sweetalert2": "^11.10.0"
   },

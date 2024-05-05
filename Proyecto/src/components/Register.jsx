@@ -1,46 +1,35 @@
 import React, { useContext, useState } from 'react'
 import { authContext } from "../context/AuthContext"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
+import {useForm} from 'react-hook-form'
 export const Register = () => {
-  const {signUp, error} = useContext(authContext)
-  const [user, setUser] = useState({nickName: "",email:"", password:"", photoURL:""})
-  const navigate = useNavigate()
-  const handleChange = (e)=>{
-    const {name, value} = e.target
-    setUser({
-      ...user,
-      [name]:value,
-      photoURL:'/jovencito.webp'
-    })
-  }
+  const {signUp} = useContext(authContext)
+  const {register, handleSubmit} = useForm()
 
-  const handleSubmit = async(e)=>{
-    e.preventDefault()
-    const resultSignUp = await signUp(user.email, user.password, user.nickName, user.photoURL)
-    if(resultSignUp)navigate("/")  
-  }
   return (
     <>
    <div className='container center'>
     <div className="form-container">
       <p className="title">Sign Up</p>
-      <form action="" onSubmit={handleSubmit} className='form'>
+      <form action="" onSubmit={handleSubmit((values)=>{
+        signUp(values)
+      })} className='form'>
       <div className='form_group'>
-        <label htmlFor="nickName">NickName:</label>
-        <input onChange={handleChange} type="text" name='nickName' className="input" placeholder="TheBeast123" required/>
+        <label htmlFor="username">Username:</label>
+        <input  type="text" className="input" {...register('username',{required:true})} placeholder="TheBeast123"/>
         </div>
         <div className='form_group'>
         <label htmlFor="email">Email:</label>
-        <input onChange={handleChange} type="email" name='email' className="input" placeholder="YourEmail@company.com"/>
+        <input  type="email" className="input" {...register('email',{required:true})} placeholder="YourEmail@company.com"/>
+        </div>
+        <div className='form_group'>
+        <label htmlFor="birthday">Birthday:</label>
+        <input  type="date" className="input" {...register('birthday',{required:true})}/>
         </div>
         <div className='form_group'>
         <label htmlFor="password">Password:</label>
-        <input onChange={handleChange} type="password" name='password' className="input" placeholder="*******"/>
+        <input type="password" className="input" {...register('password',{required:true})} placeholder="*******"/>
         </div>
-        {
-          error&& <span>{error}</span>
-        }
-        
         <button className="form-btn" type='submit'>Sign Up</button>
         </form>
       <p className="sign-up-label">

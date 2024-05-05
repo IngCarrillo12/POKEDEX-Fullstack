@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { MostrarFavoritos } from "../fireBase"
+
 import { authContext } from '../context/AuthContext'
 import { PokemonContext } from '../context/PokemonContext'
 import { CardPokemon, Loader } from "../components/index"
 export const FavoritosPage = () => {
-    const { user } = useContext(authContext)
+    const { user, getFavorites } = useContext(authContext)
     const { globalPokemons } = useContext(PokemonContext)
     const [loading, setLoading] = useState(true)
     const [favorites, setfavorites] = useState([])
     const loadFavorite = async()=>{
-        const data = await MostrarFavoritos(user.uid)
-        const ids = await data.pokemonsIds
+      const data = await getFavorites()
+      const ids = data.map(data=> data.idpokemon.toString())
         if(ids){
             const pokemonsFavorites = globalPokemons.filter(pokemon=> ids.includes(""+pokemon.id))
             setfavorites(pokemonsFavorites)

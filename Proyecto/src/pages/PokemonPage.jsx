@@ -3,19 +3,18 @@ import { useParams } from 'react-router-dom'
 import { PokemonContext } from '../context/PokemonContext'
 import { Loader } from '../components/Loader'
 import { authContext } from '../context/AuthContext'
-import {MostrarFavoritos, toggleFavoritos} from "../fireBase"
 
 export const PokemonPage = () => {
   const { getPokemonId } = useContext(PokemonContext)
-  const { user } = useContext(authContext)
+  const { user, getFavorites, toggleFavoritos  } = useContext(authContext)
   const [loading, setloading] = useState(true)
   const [pokemon, setpokemon] = useState({})
   const [favorito, setFavorito] = useState(false)
   const {id} = useParams()
 
   const loadFavorites= async ()=>{
-    const data = await MostrarFavoritos(user.uid)
-    const ids = data.pokemonsIds
+    const data = await getFavorites()
+    const ids = data.map(data=> data.idpokemon.toString())
     if(ids){
       const encontrado = ids.includes(id)
       if(encontrado)setFavorito(true)
@@ -30,6 +29,35 @@ export const PokemonPage = () => {
   await fetchPokemon(id)
   setloading(false)
  }
+ const handleFavorite = async (e) => {
+  e.stopPropagation();
+  try {
+    if(user){
+    await toggleFavoritos(pokemon.id.toString(), user.idusers);
+    // No necesitas cargar los favoritos nuevamente después de cambiarlos
+    // La actualización de 'favorito' se realiza directamente después del toggle
+    setFavorito((prevFavorito) => !prevFavorito);
+  }else{
+    Swal.fire({
+      title: "info",
+      text:'Registrarse/Loguearse para esta accion',
+      icon: 'info',
+      showDenyButton: true,
+      confirmButtonText: "Registrarse",
+      denyButtonText: `Logearse`
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        navigate('/register')
+      } else if (result.isDenied) {
+        navigate('/login')
+      }
+    });
+  }
+  } catch (error) {
+    console.error('Error al cambiar el estado favorito:', error.message);
+  }
+};
   useEffect(()=>{
     loadResources(id)
   },[id, user])
@@ -81,9 +109,9 @@ export const PokemonPage = () => {
           <h1>Estadísticas </h1>
           {
             !favorito?(
-                <img onClick={()=>{toggleFavoritos(user.uid, id); setFavorito(true)}} width="24" height="24" src="https://img.icons8.com/ios/24/like--v1.png" alt="like--v1"/>
+                <img onClick={handleFavorite} width="24" height="24" src="https://img.icons8.com/ios/24/like--v1.png" alt="like--v1"/>
             ):(
-              <img onClick={()=>{toggleFavoritos(user.uid, id); setFavorito(false)}} width="24" height="24" src="https://img.icons8.com/fluency/24/like.png" alt="like"/>
+              <img onClick={handleFavorite} width="24" height="24" src="https://img.icons8.com/fluency/24/like.png" alt="like"/>
             )
           }
           

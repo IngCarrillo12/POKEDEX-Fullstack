@@ -1,114 +1,70 @@
-import {createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup ,updateProfile, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import {doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../fireBase";
+
 import { useEffect, useState } from "react";
 import { authContext } from "./AuthContext";
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import Swal from "sweetalert2"
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
- 
-  const validatedError = (error)=>{
-    if(error ==="auth/invalid-login-credentials"){
-      Swal.fire({
-        title: "ERROR",
-        text: "Credenciales Invalidas",
-        icon: "error"
-      });
-      return;
-    }if(error==="auth/missing-password"){
-      Swal.fire({
-        title: "ERROR",
-        text: "Ingrese su contrasena",
-        icon: "error"
-      });
-      return;
-    }if(error==="auth/invalid-email"){
-      Swal.fire({
-        title: "ERROR",
-        text: "Email Invalido",
-        icon: "error"
-      });
-      return;
-    }if(error==="auth/missing-email"){
-      Swal.fire({
-        title: "ERROR",
-        text: "Ingrese su correo",
-        icon: "error"
-      });
-      return;
-    }else{
-      Swal.fire({
-        title: "ERROR",
-        text: error,
-        icon: "error"
-      });
-      return;
-    }
-  }
-  const signUp = async (email, password, nick, imageUrl) => {
+  const urlApi = 'http://localhost:3001'
+  const navigate = useNavigate()
+
+const signUp = async (values) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      try {
-        await updateProfile(user, {
-          displayName: nick,
-          photoURL: imageUrl,
-        });
-        const userId = user.uid;
-        const userData = {
-          name: nick,
-          photoURL: imageUrl,
-        };
-
-        // Guardar los datos en Firestore
-        const userDocRef = doc(db, 'users', userId);
-        try {
-          await setDoc(userDocRef, userData);
-          console.log('Usuario registrado con éxito y datos adicionales guardados en Firestore.');
-          return true;
-        } catch (error) {
-          validatedError(error.code)
-          return false;
-        }
-      } catch (error) {
-        validatedError(error.code)
-        return false;
-      }
-    } catch (error) {
-      validatedError(error.code)
-      return false;
+      const {username, email, birthday, password} = values
+      const {data} = await axios.post(`${urlApi}/users/register`,{username, email, birthday, password},{withCredentials:true})
+      console.log(data)
+      setUser(data)
+      navigate('/')
+    } catch ({response}) {
+      Swal.fire({
+        title: 'Error',
+        text: response.data.message,
+        icon: "error"
+      })
     }
-  };
-
-  const login = async(email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      
-      return true; // Devuelve true si el inicio de sesión es exitoso
-    } catch (error) {
-      validatedError(error.code)
-      return false; // Devuelve false si hay un error durante el inicio de sesión
-    }
-  
-  };
-  
-  const loginWithGoogle =()=>{
-    const  GoogleProvider = new GoogleAuthProvider()
-    return signInWithPopup(auth, GoogleProvider)
+};
+const getFavorites = async()=>{
+   try {
+      const {data} = await axios.get(`${urlApi}/favorites/${user.idusers}`,{withCredentials: true})
+      return [...data]
+   } catch ({response}) {
+      console.log(response.data.message)
+   }
+}
+const toggleFavoritos= async(idpokemon, idusers)=>{
+  try {
+    const iduser = Number(idusers)
+    const pokemonid = Number(idpokemon)
+    const {data} = await axios.post(`${urlApi}/favorites`,{idusers:iduser, idpokemon:pokemonid},{withCredentials: true})
+    return true
+ } catch ({response}) {
+    console.log(response.data.message)
+ }
+}
+const login = async(values) => {
+  try {
+    const {username, password} = values
+    const {data} = await axios.post(`${urlApi}/users/login`,{username, password},{withCredentials:true})
+    setUser(data)
+    navigate('/')
+  } catch ({response}) {
+    Swal.fire({
+      title: 'Error',
+      text: response.data.message,
+      icon: "error"
+    })
   }
+};
 
-  const logout = () => signOut(auth);
+const logout = async()=>{
+  const {data} = await axios.post(`${urlApi}/users/logout`,{withCredentials:true})
+  if(data)setUser(null)
+}
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   return (
-    <authContext.Provider value={{ signUp, login, user, logout, loginWithGoogle }}>
+    <authContext.Provider value={{ signUp, login, user, getFavorites, toggleFavoritos, logout}}>
       {children}
     </authContext.Provider>
   );

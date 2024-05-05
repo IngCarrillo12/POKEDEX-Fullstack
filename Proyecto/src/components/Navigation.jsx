@@ -7,7 +7,6 @@ import { ModalAvatares } from "./index"
 import logoApp from "../resources/logoApp.webp"
 export const Navigation = () => {
   const {onInputChange, valueSearch, onResetForm} = useContext(PokemonContext)
-  const [changeAvatar, setChangeAvatar] = useState(false)
   const {user} = useContext(authContext) 
   const [userMenu, setUserMenu] = useState(false)
   const navigate = useNavigate()
@@ -49,20 +48,16 @@ export const Navigation = () => {
             </div>
           ):(
             <div className='userAuth'>
-              <img width="50" onClick={()=>setUserMenu(!userMenu)} height="50" src={user.photoURL} alt="user-male-circle"/>
+              <img width="50" onClick={()=>setUserMenu(!userMenu)} height="50" src={'../public/pikachu.webp'} alt="avatar"/>
               {
             userMenu&&(
-              <UserMenu setChangeAvatar={setChangeAvatar} setUserMenu={setUserMenu} name={user.displayName} image={user.photoURL} email={user.email} />
+              <UserMenu setUserMenu={setUserMenu} name={user.username} email={user.email} />
             )
           }
           </div>
           )
           }
-          {
-            changeAvatar&&(
-              <ModalAvatares setChangeAvatar={setChangeAvatar}/>
-            )
-          }
+    
           </div>
     </header>
       <Outlet/>

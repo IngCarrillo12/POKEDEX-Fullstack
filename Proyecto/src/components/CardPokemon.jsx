@@ -1,18 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { MostrarFavoritos, toggleFavoritos } from '../fireBase';
 import { authContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export const CardPokemon = ({ pokemon }) => {
   const navigate = useNavigate();
-  const { user } = useContext(authContext);
+  const { user, getFavorites, toggleFavoritos  } = useContext(authContext);
   const [favorito, setFavorito] = useState(false);
 
   const loadFavorites = async () => {
     try {
-      const data = await MostrarFavoritos(user.uid);
-      const ids = data.pokemonsIds;
-      const encontrado = ids ? ids.includes(pokemon.id.toString()) : false;
+      const data = await getFavorites();
+      const ids = data.map(data=> data.idpokemon.toString())
+      const encontrado = data ? ids.includes(pokemon.id.toString()) : false;
       setFavorito(encontrado);
     } catch (error) {
       console.error('Error al cargar favoritos:', error.message);
@@ -25,12 +25,29 @@ export const CardPokemon = ({ pokemon }) => {
 
   const handleFavorite = async (e) => {
     e.stopPropagation();
-
     try {
-      await toggleFavoritos(user.uid, pokemon.id.toString());
+      if(user){
+      await toggleFavoritos(pokemon.id.toString(), user.idusers);
       // No necesitas cargar los favoritos nuevamente después de cambiarlos
       // La actualización de 'favorito' se realiza directamente después del toggle
       setFavorito((prevFavorito) => !prevFavorito);
+    }else{
+      Swal.fire({
+        title: "info",
+        text:'Registrarse/Loguearse para esta accion',
+        icon: 'info',
+        showDenyButton: true,
+        confirmButtonText: "Registrarse",
+        denyButtonText: `Logearse`
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          navigate('/register')
+        } else if (result.isDenied) {
+          navigate('/login')
+        }
+      });
+    }
     } catch (error) {
       console.error('Error al cambiar el estado favorito:', error.message);
     }
