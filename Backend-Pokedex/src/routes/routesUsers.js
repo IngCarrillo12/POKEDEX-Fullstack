@@ -6,5 +6,5 @@ const routeUsers = Router();
 routeUsers.post('/register', createUser )
 routeUsers.post('/login', signIn) 
 routeUsers.post('/logout', logout)
-routeUsers.post('/profile', authRequired, updateUser)
+routeUsers.put('/profile', authRequired, updateUser)
 export default routeUsers

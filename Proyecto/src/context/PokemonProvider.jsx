@@ -37,20 +37,34 @@ export const PokemonProvider = ({ children }) => {
         
     }
     //Peticion para traer todos los pokemones
-        const getGlobalPokemons = async()=>{
-            const baseURL = 'https://pokeapi.co/api/v2/'
-            const res = await fetch(`${baseURL}pokemon?limit=100000&offset=0`)
-            const data = await res.json().catch(e =>e)
-            const promises = data.results.map(async(pokemon)=>{
-                const res = await fetch (pokemon.url)
-                const data = await res.json().catch(e =>e)
-                return data
-            })
-            const results = await Promise.all(promises)
-            setglobalPokemons(results)
-            setloading(false)
-            sethiddenCargarMas(false)
+    const getGlobalPokemons = async () => {
+        const baseURL = 'https://pokeapi.co/api/v2/';
+        const response = await fetch(`${baseURL}pokemon?limit=100000&offset=0`);
+        const data = await response.json().catch(e => e);
+    
+        // Limitar el número de solicitudes concurrentes
+        const concurrentRequests = 20;
+        let results = [];
+    
+        for (let i = 0; i < data.results.length; i += concurrentRequests) {
+            const promises = data.results.slice(i, i + concurrentRequests).map(async (pokemon) => {
+                try {
+                    const res = await fetch(pokemon.url);
+                    return await res.json();
+                } catch (e) {
+                    return null; // Maneja los errores de cada solicitud individualmente
+                }
+            });
+    
+            const partialResults = await Promise.allSettled(promises);
+            results = results.concat(partialResults.map(result => result.status === 'fulfilled' ? result.value : null));
         }
+    
+        setglobalPokemons(results.filter(pokemon => pokemon !== null));
+        setloading(false);
+        sethiddenCargarMas(false);
+    };
+    
     
     const  getPokemonId = async(id)=>{
         const baseURL = 'https://pokeapi.co/api/v2/'

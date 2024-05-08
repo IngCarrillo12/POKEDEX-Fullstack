@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import { authContext } from "../context/AuthContext"
-import { Link } from "react-router-dom"
 import {useForm} from 'react-hook-form'
 
 export const EditProfile = () => {
@@ -17,8 +16,7 @@ export const EditProfile = () => {
         defaultValues: {
             username: user.username,  
             email: user.email, 
-            birthday: formatDate(user.birthday),  
-            password: "*******"  
+            birthday: formatDate(user.birthday)
         }
     })
   
@@ -27,7 +25,7 @@ export const EditProfile = () => {
      <div className='container center'>
       <div className="form-container">
         <p className="title">Editar Perfil</p>
-        <form action="" onSubmit={handleSubmit((values)=>{
+        <form action="POST" onSubmit={handleSubmit((values)=>{
           editProfile(values)
         })} className='form'>
         <div className='form_group'>
@@ -44,7 +42,7 @@ export const EditProfile = () => {
           </div>
           <div className='form_group'>
           <label htmlFor="password">Password:</label>
-          <input type="password" className="input" {...register('password',{required:true})} placeholder="*******"/>
+          <input type="password" className="input" {...register('password')} placeholder="*******"/>
           </div>
           <button className="form-btn" type='submit'>Guardar Cambios</button>
           </form>

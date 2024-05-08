@@ -63,12 +63,21 @@ const logout = async()=>{
 }
 const editProfile = async(values)=>{
     try {
-      console.log(username, password, birthday, email)
       const {username, password, birthday, email} = values
       const {data}= await axios.put(`${urlApi}/users/profile`,{username, password, birthday, email, iduser: user.idusers}, {withCredentials:true}) 
-      console.log(data.message)   
-    } catch (error) {
-      console.log(error)
+      setUser({...user,username: username, birthday:birthday, email: email})
+      Swal.fire({
+        title: 'success',
+        text: data.message,
+        icon: 'success'
+      })
+      navigate('/')
+    } catch ({response}) {
+      Swal.fire({
+        title: 'Error',
+        text: response.data.message,
+        icon: 'error'
+      })
     }
 }
 

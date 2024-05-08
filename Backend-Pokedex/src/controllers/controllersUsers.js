@@ -59,20 +59,29 @@ export const logout = (req,res)=>{
 export const updateUser = async(req, res)=>{
     try {
         const {username, password, birthday, email, iduser} = req.body
-        // Si planeas actualizar la contraseña, asegúrate de hashearla primero
-        const passwordHash = await bcrypt.hash(password, 10);
-        console.log(username, password, birthday, email, iduser)
-        const [response] = await db.query('UPDATE users SET username=?, password=?, birthday=?, email=? WHERE idusers=?', 
-                                          [username, passwordHash, birthday, email, iduser]);
-
-        if(response.affectedRows === 0){
-            return res.status(404).send({message: "No se pudo actualizar el usuario"});
+        if(password){
+            const passwordHash = await bcrypt.hash(password, 10);
+            const [response] = await db.query('UPDATE users SET username=?, password=?, birthday=?, email=? WHERE idusers=?', 
+                                              [username, passwordHash, birthday, email, iduser]);
+    
+            if(response.affectedRows === 0){
+                return res.status(404).send({message: "No se pudo actualizar el usuario"});
+            }
+            return res.status(200).send({message: "Usuario actualizado con éxito"});
         }
-        res.status(200).send({message: "Usuario actualizado con éxito"});
+       const [response] = await db.query('SELECT password FROM users WHERE idusers=?', [iduser])
+        const passwordResponse = response[0].password
+        const [data] = await db.query('UPDATE users SET username=?, password=?, birthday=?, email=? WHERE idusers=?', 
+                                              [username, passwordResponse, birthday, email, iduser]);
+    
+            if(data.affectedRows === 0){
+                return res.status(404).send({message: "No se pudo actualizar el usuario"});
+            }
+            return res.status(200).send({message: "Usuario actualizado con éxito"});
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({message: error.message});
+        res.status(500).send({message: 'Error email/username ya se encuentran registrados'});
     }
 }
 
